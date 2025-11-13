@@ -11,7 +11,7 @@
 [![Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing)
 [![License](https://img.shields.io/badge/Code-Apache%202.0-blue.svg)](LICENSE.md)
 [![Assets License](https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg)](LICENSE_ASSETS.txt)
-[![Docs (soon)](https://img.shields.io/badge/Docs-Website-informational)]()
+<!-- [![Docs (soon)](https://img.shields.io/badge/Docs-Website-informational)]() -->
 
 <!-- [![Paper](https://img.shields.io/badge/Paper-arXiv-orange.svg)](https://arxiv.org/abs/XXXX.XXXXX) -->
 
