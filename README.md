@@ -5,15 +5,22 @@
 [![COL Trailer](banner.png)](https://www.youtube.com/watch?v=KhIO3J9oGr8)
 
 <p align="center">
-
-<!-- [![PyPI (soon)](https://img.shields.io/pypi/v/pycol.svg?label=PyPI&logo=pypi)]() -->
-<!-- [![GitHub release](https://img.shields.io/github/v/release/Paris-COL/COL?logo=github)](https://github.com/Paris-COL/CityOfLight/releases) -->
-[![Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing)
-[![Trailer](https://img.shields.io/badge/Trailer-YouTube-red?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=KhIO3J9oGr8)
-[![License](https://img.shields.io/badge/Code-Apache%202.0-blue.svg)](LICENSE.md)
-[![Assets License](https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg)](LICENSE_ASSETS.txt)
-<!-- [![Docs (soon)](https://img.shields.io/badge/Docs-Website-informational)]() -->
-
+  <!-- Colab -->
+  <a href="https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Colab demo">
+  </a>
+  <!-- Trailer -->
+  <a href="https://www.youtube.com/watch?v=KhIO3J9oGr8">
+    <img src="https://img.shields.io/badge/Trailer-YouTube-red?logo=youtube&logoColor=white" alt="Trailer">
+  </a>
+  <!-- Code License -->
+  <a href="LICENSE.md">
+    <img src="https://img.shields.io/badge/Code-Apache%202.0-blue.svg" alt="Code License">
+  </a>
+  <!-- Assets License -->
+  <a href="LICENSE_ASSETS.txt">
+    <img src="https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg" alt="Assets License">
+  </a>
 </p>
 <!-- [![Paper](https://img.shields.io/badge/Paper-arXiv-orange.svg)](https://arxiv.org/abs/XXXX.XXXXX) -->
 
