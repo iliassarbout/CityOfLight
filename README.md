@@ -12,8 +12,10 @@
 <strong>
 [ <a href="#-quick-start">Quick Start</a> ·
 <a href="#-features">Features</a> ·
+<a href="#-releases">Releases</a> ·
 <a href="#-licensing">Licensing</a> ·
-<a href="#-citation">Citation</a> ]
+<a href="#-citation">Citation</a> ·
+<a href="#-contributors">Contributors</a> ]
 </strong>
 </div>
 
@@ -44,63 +46,54 @@ COL is designed for **fast scripting, large-scale data collection, RL, sim-to-re
 
 ## 🛠 Quick Start
 
-
 1) Clone the repo (python package):
-    ```
+
     git clone https://github.com/Paris-COL/CityOfLight.git
-    ```
 
 2) Download current Unity build:
-    ```
+
     cd CityOfLight
     curl -fL "https://github.com/Paris-COL/CityOfLight/releases/download/0.1.0/COL_0.1.0_Linux_x86_64_demo.zip" -o COL_0.1.0_Linux_x86_64_demo.zip
     unzip -o COL_0.1.0_Linux_x86_64_demo.zip
     chmod +x ./unix/COL.x86_64
-    ```
 
 3) Launch the demo notebook and start exploring COL
 
+---
 
+## 🚀 Releases
 
+Current public releases contain **108 tiles of 10 000 m²** in the center of Paris.
+
+---
 
 ## 📦 Documentation
 
 *Coming soon.*
 
-
-
+---
 
 ## 📜 Licensing
 
 - **Code**: released under the **Apache 2.0** license. See `LICENSE.md`.
 - **Assets (3D meshes, textures, etc.)**: released under **CC BY-NC 4.0**. See `LICENSE_ASSETS.txt`.
 
-
+---
 
 ## ✏️ Citation
 
 If you use **City of Light (COL)** in your research, please cite:
 
 > (Citation to be added soon.)
+
 A ready-to-use BibTeX entry will be provided here as soon as the paper is public.
 
 ---
 
-## 🤝 Contributing
+## 👥 Contributors & Contact
 
-Contributions are welcome!
+City of Light (COL) was developed between **2024 and 2025** by **Ilias Sarbout**.
+**Theo Cazenave-Coupet** contributed to COL during his internship.
 
-- Report bugs or request features via [GitHub Issues](https://github.com/Paris-COL/CityOfLight/issues).
-- Open pull requests for:
-  - Bug fixes
-  - Performance improvements
-  - New examples or tutorials
-  - Extended sensors or environments
-
-
----
-
-## 📨 Contact
-
-For questions about COL, collaborations, or licensing, please open an issue or contact the maintainers via the repository’s contact email.
+For questions about COL or collaborations, contact the maintainers at ilias.sarbout [at] gmail [dot] com.
 
