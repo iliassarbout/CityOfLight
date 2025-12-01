@@ -4,6 +4,8 @@
 
 [![COL Trailer](banner.png)](https://www.youtube.com/watch?v=KhIO3J9oGr8)
 
+<p align="center">
+
 <!-- [![PyPI (soon)](https://img.shields.io/pypi/v/pycol.svg?label=PyPI&logo=pypi)]() -->
 <!-- [![GitHub release](https://img.shields.io/github/v/release/Paris-COL/COL?logo=github)](https://github.com/Paris-COL/CityOfLight/releases) -->
 [![Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing)
@@ -12,6 +14,7 @@
 [![Assets License](https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg)](LICENSE_ASSETS.txt)
 <!-- [![Docs (soon)](https://img.shields.io/badge/Docs-Website-informational)]() -->
 
+</p>
 <!-- [![Paper](https://img.shields.io/badge/Paper-arXiv-orange.svg)](https://arxiv.org/abs/XXXX.XXXXX) -->
 
 <div align="center">
