@@ -4,8 +4,23 @@
 
 [![COL Trailer](banner.png)](https://www.youtube.com/watch?v=KhIO3J9oGr8)
 
-<p align="center"><a href="https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing" target="_blank" rel="noopener"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Colab demo"></a><a href="https://www.youtube.com/watch?v=KhIO3J9oGr8" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/Trailer-YouTube-red?logo=youtube&logoColor=white" alt="Trailer"></a><a href="LICENSE.md" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/Code-Apache%202.0-blue.svg" alt="Code License"></a><a href="LICENSE_ASSETS.txt" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg" alt="Assets License"></a></p>
-
+<p align="center">
+  <a href="https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing" target="_blank">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Colab demo">
+  </a>
+  &nbsp;
+  <a href="https://www.youtube.com/watch?v=KhIO3J9oGr8" target="_blank">
+    <img src="https://img.shields.io/badge/Trailer-YouTube-red?logo=youtube&logoColor=white" alt="Trailer">
+  </a>
+  &nbsp;
+  <a href="LICENSE.md" target="_blank">
+    <img src="https://img.shields.io/badge/Code-Apache%202.0-blue.svg" alt="Code License">
+  </a>
+  &nbsp;
+  <a href="LICENSE_ASSETS.txt" target="_blank">
+    <img src="https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg" alt="Assets License">
+  </a>
+</p>
 <!-- [![Paper](https://img.shields.io/badge/Paper-arXiv-orange.svg)](https://arxiv.org/abs/XXXX.XXXXX) -->
 
 <div align="center">
