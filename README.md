@@ -93,7 +93,8 @@ A ready-to-use BibTeX entry will be provided here as soon as the paper is public
 ## 👥 Contributors & Contact
 
 City of Light (COL) was developed between **2024 and 2025** by **Ilias Sarbout**.
-**Theo Cazenave-Coupet** contributed to COL during his internship.
+**Theo Cazenave-Coupet** contributed to COL during his internship (pedestrians system).
+**Mehdi Ounissi** contributed to COL through guidance on design system choices.
 
 For questions about COL or collaborations, contact the maintainers at ilias.sarbout [at] gmail [dot] com.
 
