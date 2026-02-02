@@ -53,8 +53,8 @@ COL is designed for **fast scripting, large-scale data collection, RL, sim-to-re
 2) Download current Unity build:
 ```
     cd CityOfLight
-    curl -fL "https://github.com/Paris-COL/CityOfLight/releases/download/0.1.0/COL_0.1.0_Linux_x86_64_demo.zip" -o COL_0.1.0_Linux_x86_64_demo.zip
-    unzip -o COL_0.1.0_Linux_x86_64_demo.zip
+    curl -fL "https://github.com/iliassarbout/CityOfLight/releases/download/0.2.0/COL_0.2.0_Linux_x86_64_demo.zip" -o COL_0.2.0_Linux_x86_64_demo.zip
+    unzip -o COL_0.2.0_Linux_x86_64_demo.zip
     chmod +x ./unix/COL.x86_64
 ```
 3) Launch the demo notebook and start exploring COL
