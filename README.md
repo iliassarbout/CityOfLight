@@ -46,18 +46,24 @@ COL is designed for **fast scripting, large-scale data collection, RL, sim-to-re
 
 ## 🛠 Quick Start
 
-1) Clone the repo (python package):
+### 1) Download & run COL (Unity build)
+
+1. Download the latest build from the **v0.2.0 release page**:  
+   https://github.com/iliassarbout/CityOfLight/releases/tag/0.2.0
+
+2. Extract the archive and run the executable for your OS.
+
+
+### 2) Control COL from Python (PyCol)
+
+Clone the repo and launch the demo notebook to control COL (stepping, actions, multi-sensor frames):
 ```
     git clone https://github.com/Paris-COL/CityOfLight.git
-```
-2) Download current Unity build:
-```
     cd CityOfLight
-    curl -fL "https://github.com/iliassarbout/CityOfLight/releases/download/0.2.0/COL_0.2.0_Linux_x86_64_demo.zip" -o COL_0.2.0_Linux_x86_64_demo.zip
-    unzip -o COL_0.2.0_Linux_x86_64_demo.zip
-    chmod +x ./unix/COL.x86_64
 ```
-3) Launch the demo notebook and start exploring COL
+
+Then open the demo notebook and start interacting with the simulator.
+
 
 ---
 
