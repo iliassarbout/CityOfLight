@@ -45,25 +45,12 @@ from .unity_launcher import (
 
 def depth_rgba8_to_float32(rgba_u8: np.ndarray, near=0.01, far=300) -> np.ndarray:
     """
-    Parameters
-    ----------
-    rgba_u8 : (H, W, 4) uint8
-        Depth image produced by the Unity shader that packs a float
-        into R-G-B-A channels.
-    near : clip clipping plane
-    far : far clipping plane
-
-    Returns
-    -------
-    depth01 : (H, W) float32
-        Depth in the canonical 0‥1 linear range.
-        Convert to metres with:  z = near + depth01 * (far - near)
+    Processing the Depth image produced by the Unity shader (that packs a float32
+        into R-G-B-A channels.) into a float 1-d array.
     """
 
-    # 1) convert to [0,1] floats
     rgba = rgba_u8.astype(np.float32) / 255.0
 
-    # 2) dot-product with decode weights (same as EncodeFloatToRGBA8 inverse)
     k = np.array(
         [
             1.0,
@@ -74,9 +61,8 @@ def depth_rgba8_to_float32(rgba_u8: np.ndarray, near=0.01, far=300) -> np.ndarra
         dtype=np.float32,
     )
 
-    depth01 = np.tensordot(rgba, k, axes=([-1], [0]))  # (H,W)
+    depth01 = np.tensordot(rgba, k, axes=([-1], [0])) 
     depth01 = near + depth01 * (far - near)
-    # depth_01 = np.expand_dims(depth01,-1).repeat(3,-1)
     return depth01
 
 
@@ -141,9 +127,6 @@ class COL:
         # Action index (was global _next)
         self._next: int = 1  
 
-    # ─────────────────────────────────────────
-    # Launch / setup
-    # ─────────────────────────────────────────
 
     def launch(self, wait_for_unity: float = 30.0) -> bool:
         """
@@ -199,20 +182,11 @@ class COL:
             close(self.process)
             self.process = None
 
-    # ─────────────────────────────────────────
-    # Interaction methods
-    # ─────────────────────────────────────────
+
 
     def move_player(self, x: float, y: float, z: float, wait: bool = True) -> None:
         """
-        Request Unity to move the player instantly to (x, y, z).
-
-        Parameters
-        ----------
-        x, y, z : floats
-            Target world-space coordinates (must make sense in your map).
-        wait : bool, optional
-            If True, block until Unity has executed the command (funcId resets to 0).
+        Request Unity to move the player instantly to (x, y, z). Comments are written to help understand how function processing is handled on Unity side (funcId).
         """
         # 1.  write the three floats into the ARGS block
         self.shm[self.ARGS_OFF : self.ARGS_OFF + 12] = struct.pack("<fff", x, y, z)
@@ -228,22 +202,13 @@ class COL:
 
     def move_goal(self, x: float, y: float, z: float, wait: bool = True) -> None:
         """
-        Request Unity to move the goal (a white cube 1-1-1) instantly to (x, y, z).
-
-        Parameters
-        ----------
-        x, y, z : floats
-            Target world-space coordinates (must make sense in your map).
-        wait : bool, optional
-            If True, block until Unity has executed the command (funcId resets to 0).
+        Request Unity to move the goal (a white cube 1-1-1) instantly to (x, y, z). Might be useful for RL experiments.
         """
-        # 1.  write the three floats into the ARGS block
         self.shm[self.ARGS_OFF : self.ARGS_OFF + 12] = struct.pack("<fff", x, y, z)
 
-        # 2.  set funcId = 5  (MoveGoalTo)
+        # funcId = 5  (MoveGoalTo)
         self.shm[self.FUNC_OFF : self.FUNC_OFF + 4] = struct.pack("<I", 5)
 
-        # 3.  optionally wait until Unity zeroes the funcId to signal completion
         if wait:
             while struct.unpack_from("<I", self.shm, self.FUNC_OFF)[0] != 0:
                 time.sleep(0)
@@ -251,33 +216,25 @@ class COL:
     def rotate_player(self, x: float, y: float, z: float, wait: bool = True) -> None:
         """
         Request Unity to rotate the player instantly to (rx, ry, rz).
-
-        Parameters
-        ----------
-        x, y, z : floats
-            Target world-space coordinates (must make sense in your map).
-        wait : bool, optional
-            If True, block until Unity has executed the command (funcId resets to 0).
         """
-        # 1.  write the three floats into the ARGS block
         self.shm[self.ARGS_OFF : self.ARGS_OFF + 12] = struct.pack("<fff", x, y, z)
 
-        # 2.  set funcId = 4  (RotatePlayerTo)
+        # funcId = 4  (RotatePlayerTo)
         self.shm[self.FUNC_OFF : self.FUNC_OFF + 4] = struct.pack("<I", 4)
 
-        # 3.  optionally wait until Unity zeroes the funcId to signal completion
         if wait:
             while struct.unpack_from("<I", self.shm, self.FUNC_OFF)[0] != 0:
                 time.sleep(0)
 
     def rebuild_chunks(self) -> None:
+        # func id = 4
         self.shm[self.FUNC_OFF : self.FUNC_OFF + 4] = struct.pack("<I", 2)
         while struct.unpack_from("<I", self.shm, self.FUNC_OFF)[0] != 0:
             time.sleep(0)
 
     def force_camera_read(self) -> None:
         """Requests for camera rendering."""
-        
+        #func id = 3
         self.shm[self.FUNC_OFF : self.FUNC_OFF + 4] = struct.pack("<I", 3)
         while struct.unpack_from("<I", self.shm, self.FUNC_OFF)[0] != 0:
             time.sleep(0.001)
@@ -297,7 +254,7 @@ class COL:
     ) -> None:
         """ Write an action for the main agent and waits for cameras rendering after step (filled in self.frames_shm)."""
         
-        #        if (gravity != 0 && gravity != _lastGravityInput) gravity won't upodate (for better keyboard control)
+
         last_update_index = struct.unpack_from("<I", self.shm, 0)[0]
         self.write_action(fwd, turn, vert, grav)
         while True:
@@ -354,6 +311,7 @@ class COL:
         self.shm[self.ARGS_OFF : self.ARGS_OFF + 12] = struct.pack(
             "<fff", float(int(chunk_idx)), 0.0, 0.0
         )
+        # func_id = 6
         self.shm[self.FUNC_OFF : self.FUNC_OFF + 4] = struct.pack("<I", 6)
 
         if not wait:

@@ -1,9 +1,11 @@
 import os, subprocess, signal, ctypes, time, mmap, struct
 import numpy as np
 from .static_flags import *
+
+
 def _pdeathsig_preexec(sig=signal.SIGTERM):
     """
-    Child hook (runs in the child just before exec):
+    On Linux preparing a child's process is easier thanks to prctlr.
     If the parent dies, the kernel sends `sig` to this process to stop it.
     """
     def _fn():
@@ -16,6 +18,98 @@ def _pdeathsig_preexec(sig=signal.SIGTERM):
             # On error, still proceed; Unity will just not auto-exit on parent death.
             pass
     return _fn
+    
+# We need windows specific imports to reproduce linux's prctlr behavior (python killed -> unity killed)
+if os.name == "nt":
+    import ctypes.wintypes as wt
+
+    if not hasattr(wt, "SIZE_T"):
+        wt.SIZE_T = ctypes.c_size_t
+    
+    if not hasattr(wt, "ULONG_PTR"):
+        wt.ULONG_PTR = ctypes.c_size_t
+        
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+
+    JobObjectExtendedLimitInformation = 9
+    JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000
+
+    class JOBOBJECT_BASIC_LIMIT_INFORMATION(ctypes.Structure):
+        _fields_ = [
+            ("PerProcessUserTimeLimit", wt.LARGE_INTEGER),
+            ("PerJobUserTimeLimit", wt.LARGE_INTEGER),
+            ("LimitFlags", wt.DWORD),
+            ("MinimumWorkingSetSize", wt.SIZE_T),
+            ("MaximumWorkingSetSize", wt.SIZE_T),
+            ("ActiveProcessLimit", wt.DWORD),
+            ("Affinity", wt.ULONG_PTR),
+            ("PriorityClass", wt.DWORD),
+            ("SchedulingClass", wt.DWORD),
+        ]
+
+    class IO_COUNTERS(ctypes.Structure):
+        _fields_ = [
+            ("ReadOperationCount", wt.ULARGE_INTEGER),
+            ("WriteOperationCount", wt.ULARGE_INTEGER),
+            ("OtherOperationCount", wt.ULARGE_INTEGER),
+            ("ReadTransferCount", wt.ULARGE_INTEGER),
+            ("WriteTransferCount", wt.ULARGE_INTEGER),
+            ("OtherTransferCount", wt.ULARGE_INTEGER),
+        ]
+
+    class JOBOBJECT_EXTENDED_LIMIT_INFORMATION(ctypes.Structure):
+        _fields_ = [
+            ("BasicLimitInformation", JOBOBJECT_BASIC_LIMIT_INFORMATION),
+            ("IoInfo", IO_COUNTERS),
+            ("ProcessMemoryLimit", wt.SIZE_T),
+            ("JobMemoryLimit", wt.SIZE_T),
+            ("PeakProcessMemoryUsed", wt.SIZE_T),
+            ("PeakJobMemoryUsed", wt.SIZE_T),
+        ]
+
+    kernel32.CreateJobObjectW.argtypes = [wt.LPVOID, wt.LPCWSTR]
+    kernel32.CreateJobObjectW.restype  = wt.HANDLE
+
+    kernel32.SetInformationJobObject.argtypes = [wt.HANDLE, wt.INT, wt.LPVOID, wt.DWORD]
+    kernel32.SetInformationJobObject.restype  = wt.BOOL
+
+    kernel32.AssignProcessToJobObject.argtypes = [wt.HANDLE, wt.HANDLE]
+    kernel32.AssignProcessToJobObject.restype  = wt.BOOL
+
+    def _create_kill_on_close_job():
+        job = kernel32.CreateJobObjectW(None, None)
+        if not job:
+            raise ctypes.WinError(ctypes.get_last_error())
+
+        info = JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
+        info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+
+        ok = kernel32.SetInformationJobObject(
+            job,
+            JobObjectExtendedLimitInformation,
+            ctypes.byref(info),
+            ctypes.sizeof(info),
+        )
+        if not ok:
+            raise ctypes.WinError(ctypes.get_last_error())
+
+        return job
+
+    def _assign_pid_to_job(job_handle, pid: int):
+        # Apparently, OpenProcess is safer than Popen._handle
+        PROCESS_ALL_ACCESS = 0x1F0FFF
+        hproc = kernel32.OpenProcess(PROCESS_ALL_ACCESS, False, pid)
+        if not hproc:
+            raise ctypes.WinError(ctypes.get_last_error())
+
+        ok = kernel32.AssignProcessToJobObject(job_handle, hproc)
+        if not ok:
+            err = ctypes.get_last_error()
+            kernel32.CloseHandle(hproc)
+            raise ctypes.WinError(err)
+
+        kernel32.CloseHandle(hproc)
+
 
 def launch_unity_instance(UNITY_EXE,LOG_DIR, batch_mode=False, *extra_args):
     """
@@ -41,14 +135,79 @@ def launch_unity_instance(UNITY_EXE,LOG_DIR, batch_mode=False, *extra_args):
 
     return subprocess.Popen(args, preexec_fn=_pdeathsig_preexec(signal.SIGTERM))
 
+
+def launch_unity_instance(UNITY_EXE, LOG_DIR, batch_mode=False, *extra_args):
+    """
+    Launch Unity with parent-death behavior:
+      - posix: prctl(PDEATHSIG) -> Unity gets SIGTERM if Python dies
+      - nt / rt: Job Object KILL_ON_JOB_CLOSE -> Unity killed if Python dies
+
+    Adds Turbo launch arg for your Unity LaunchArgsBoot:
+      turbo=True  -> --turbo
+      turbo=False -> --turbo=0
+      turbo=None  -> (no arg)
+    """
+
+    args = [
+        UNITY_EXE,
+        "-screen-fullscreen", "0",
+        "-screen-width", "100",
+        "-screen-height", "100",
+        "-logFile", os.path.join(LOG_DIR, "logs.log"),
+    ]
+
+    if batch_mode:
+        args += ["-batchmode"]
+
+    args += ["--turbo"]
+
+
+    args += list(extra_args)
+
+    if os.name == "posix":
+        return subprocess.Popen(args, preexec_fn=_pdeathsig_preexec(signal.SIGTERM))
+
+    elif os.name == "nt":
+        proc = subprocess.Popen(args)
+
+        job = _create_kill_on_close_job()
+        try:
+            _assign_pid_to_job(job, proc.pid)
+        except Exception:
+            kernel32.CloseHandle(job)
+            raise
+
+        # keep job handle alive / closing it kills Unity
+        proc._job_handle = job
+        return proc
+
+    elif os.name == "rt":
+        proc = subprocess.Popen(args)
+
+        job = _create_kill_on_close_job()
+        try:
+            _assign_pid_to_job(job, proc.pid)
+        except Exception:
+            kernel32.CloseHandle(job)
+            raise
+
+        proc._job_handle = job
+        return proc
+
+    else:
+        print("OS not supported")
+        return None
+
+
+
 def close(proc):
     """Closes Unity player."""
     if proc.poll() is None:
-        proc.terminate()          # SIGTERM
+        proc.terminate()          
         try:
             proc.wait(5)
         except subprocess.TimeoutExpired:
-            proc.kill()           # SIGKILL fallback
+            proc.kill()           
             
 def populate(config):
     HP = {
@@ -65,9 +224,9 @@ def populate(config):
     "depth":           config['depth_camera'],
     "normals":         config['normals_camera'],
     "semantic":        config['semantic_camera'],
-    "imageWidth":      config['IMG_SIZE'],          # NEW – width  (px)
-    "imageHeight":     config['IMG_SIZE'],          # NEW – height (px)
-    "vFOV":            config['vertical_fov'],         # NEW – vertical field-of-view (deg)
+    "imageWidth":      config['IMG_SIZE'],          
+    "imageHeight":     config['IMG_SIZE'],         
+    "vFOV":            config['vertical_fov'],        
     "startX":          config['start_x'],
     "startY":          config['start_y'],
     "startZ":          config['start_z'],
@@ -115,16 +274,6 @@ def prepare_shm(MAP_NAME = "paris3d_ipc", timeout: float = 30.0):
 def check_unity_readiness(shm, timeout: float = 3.0) -> bool:
     """
     Wait until Unity signals readiness (HP_OFF == 0).
-    
-    Parameters
-    ----------
-    timeout : float
-        Number of seconds to wait. If <= 0, check only once.
-    
-    Returns
-    -------
-    bool
-        True if Unity is ready within timeout, False otherwise.
     """
     deadline = time.time() + timeout
     while True:
@@ -132,28 +281,11 @@ def check_unity_readiness(shm, timeout: float = 3.0) -> bool:
             return True
         if timeout > 0 and time.time() >= deadline:
             return False
-        time.sleep(0.01)  # small sleep to avoid busy spin
+        time.sleep(0.01)  # avoiding busy spin
     
 def parametrize(shm, HP, timeout: float = 30) -> float:
     """
     Send hyper-parameters and wait for Unity to acknowledge (HP_OFF -> 2).
-
-    Parameters
-    ----------
-    shm : mmap.mmap
-    HP  : dict
-    timeout : float | None
-        Max seconds to wait for ACK. None => wait indefinitely.
-
-    Returns
-    -------
-    float
-        Elapsed seconds until Unity acknowledgement.
-
-    Raises
-    ------
-    TimeoutError
-        If timeout is set and expires before ACK.
     """
     hp_fmt  = "<fII5f9I4f"
     hp_blob = struct.pack(
@@ -176,7 +308,7 @@ def parametrize(shm, HP, timeout: float = 30) -> float:
 
     t0 = time.monotonic()
     while True:
-        if struct.unpack_from("<I", shm, HP_OFF)[0] == 2:  # ACK
+        if struct.unpack_from("<I", shm, HP_OFF)[0] == 2:  # Awknowledgement
             elapsed = time.monotonic() - t0
             print("✔ Unity acknowledged hyper-parameters – simulation running")
             return True
@@ -197,10 +329,6 @@ def prepare_frames(shm, HP):
     
     active     = [HP["rgb"], HP["depth"], HP["normals"], HP["semantic"]]
     label_iter = (lbl for lbl, flag in zip(order, active) if flag)
-    
-    # ────────────────────────────────
-    # 6.  Walk through the camera blocks
-    # ────────────────────────────────
     
     off = CAM_OFF
     for cam_idx in range(n_cam):
