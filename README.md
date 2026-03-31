@@ -90,9 +90,24 @@ Current public releases contain **108 tiles of 10 000 m²** in the center of Par
 
 If you use **City of Light (COL)** in your research, please cite:
 
-> (Citation to be added soon.)
+> Sarbout, I.; Ounissi, M.; Cazenave-Coupet, T.; Milea, D.; and Racoceanu, D. 2026.  
+> *City of Light (COL): A City-Scale, Geo-Anchored Urban Simulator with High-Throughput Multi-Sensor Streams*.  
+> In *Proceedings of the AAAI Conference on Artificial Intelligence*, 40(48): 41679–41681.  
+> https://doi.org/10.1609/aaai.v40i48.42379
 
-A ready-to-use BibTeX entry will be provided here as soon as the paper is public.
+### BibTeX
+
+```bibtex
+@inproceedings{sarbout2026col,
+  title     = {City of Light (COL): A City-Scale, Geo-Anchored Urban Simulator with High-Throughput Multi-Sensor Streams},
+  author    = {Sarbout, Ilias and Ounissi, Mehdi and Cazenave-Coupet, Th{\'e}o and Milea, Dan and Racoceanu, Daniel},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {40},
+  number    = {48},
+  pages     = {41679--41681},
+  year      = {2026},
+  doi       = {10.1609/aaai.v40i48.42379}
+}
 
 ---
 
