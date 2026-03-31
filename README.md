@@ -4,7 +4,23 @@
 
 [![COL Trailer](banner.png)](https://www.youtube.com/watch?v=KhIO3J9oGr8)
 
-<p align="center"><a href="https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing" target="_blank" rel="noopener noreferrer"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Colab demo"></a>&nbsp;&nbsp;<a href="https://www.youtube.com/watch?v=KhIO3J9oGr8" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Trailer-YouTube-red?logo=youtube&logoColor=white" alt="Trailer"></a>&nbsp;&nbsp;<a href="LICENSE.md" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Code-Apache%202.0-blue.svg" alt="Code License"></a>&nbsp;&nbsp;<a href="LICENSE_ASSETS.txt" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg" alt="Assets License"></a></p>
+<p align="center">
+  <a href="https://colab.research.google.com/drive/1Qw0uaRGRiITS5r77zU9NpuRp80KHVduO?usp=sharing" target="_blank" rel="noopener noreferrer">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Colab demo">
+  </a>&nbsp;&nbsp;
+  <a href="https://doi.org/10.1609/aaai.v40i48.42379" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Paper-AAAI%202026-orange.svg" alt="Paper">
+  </a>&nbsp;&nbsp;
+  <a href="https://www.youtube.com/watch?v=KhIO3J9oGr8" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Trailer-YouTube-red?logo=youtube&logoColor=white" alt="Trailer">
+  </a>&nbsp;&nbsp;
+  <a href="LICENSE.md" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Code-Apache%202.0-blue.svg" alt="Code License">
+  </a>&nbsp;&nbsp;
+  <a href="LICENSE_ASSETS.txt" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Assets-CC%20BY--NC%204.0-purple.svg" alt="Assets License">
+  </a>
+</p>
 
 <!-- [![Paper](https://img.shields.io/badge/Paper-arXiv-orange.svg)](https://arxiv.org/abs/XXXX.XXXXX) -->
 
@@ -108,7 +124,7 @@ If you use **City of Light (COL)** in your research, please cite:
   year      = {2026},
   doi       = {10.1609/aaai.v40i48.42379}
 }
-
+```
 ---
 
 ## 👥 Contributors & Contact
